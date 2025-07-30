@@ -1,0 +1,49 @@
+# ControleAlmo
+Este site está sendo desenvolvido com o objetivo de oferecer suporte e facilitar o trabalho dos colaboradores do almoxarifado
+//HTML
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle de Peças - Almoxarifado</title>
+  <link rel="stylesheet" href="controle.css">
+</head>
+<body>
+
+  <div class="top-footer">
+    <h1>Controle de Peças - Almoxarifado</h1>
+  </div>
+
+  <div class="config">
+    <label>Nome da Peça:</label>
+    <input type="text" id="nomePeca" placeholder="Ex: Parafuso"><br>
+
+    <label>Código da Peça:</label>
+    <input type="text" id="codigoPeca" placeholder="Ex: P123"><br>
+
+    <label>Quantidade:</label>
+    <input type="number" id="quantidadePeca" placeholder="Ex: 100"><br>
+
+    <button onclick="adicionarPeca()">Adicionar Peça</button>
+    <button class="export-btn" onclick="exportarParaExcel()">Exportar para Excel</button>
+  </div>
+
+  <table id="tabelaPecas">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Código</th>
+        <th>Quantidade</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Linhas adicionadas via JS -->
+    </tbody>
+  </table>
+
+  <script src="controle.js"></script>
+
+</body>
+</html>
