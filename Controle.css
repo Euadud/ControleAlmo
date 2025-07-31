@@ -1,7 +1,7 @@
  body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      background-color: rgb(207, 255, 247);
+      background-color: rgba(179, 179, 179, 0.979);
     }
 
 .top-footer {
@@ -9,40 +9,51 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #cdf8f6;
+  background-color: #474747;
   color: #fff;
   text-align: center;
   padding: 10px 0;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+
 }
 .config{
 margin-top: 100px;
-
+color: #ffffff;
+font-size: px;
+font-family: Arial, Helvetica, sans-serif
 
 }
     
     h1 {
 
       color: #ffffff;
+       
     }
     input, button {
       margin: 5px;
       padding: 8px;
+            box-shadow: 0 2px 5px black;
+
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
       background: #ffffff;
+      box-shadow: 0 2px 5px black;
     }
     th, td {
       padding: 10px;
       border: 1px solid #ffffff;
       text-align: left;
+    box-shadow: 0 2px 5px black;
+
     }
     th {
       background-color: #e0e0e0;
+       box-shadow: 0 2px 5px black;
+
     }
     .delete-btn {
       color: white;
@@ -50,6 +61,8 @@ margin-top: 100px;
       border: none;
       padding: 5px 10px;
       cursor: pointer;
+
+
     }
     .export-btn {
       background-color: green;
@@ -58,4 +71,93 @@ margin-top: 100px;
       padding: 8px 12px;
       cursor: pointer;
       margin-top: 10px;
+            box-shadow: 0 2px 5px black;
+
     }
+     .loginContainer {
+      font-family: Arial, sans-serif;
+    }
+
+    #loginContainer, #mainContainer {
+      display: none;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    input {
+      margin: 10px;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    .login-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #errorMessage {
+      color: red;
+      margin-top: 10px;
+    }
+
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    .export-btn {
+      margin-left: 10px;
+    }
+    .usuario-logado {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  color: white;
+  font-size: 16px;
+  z-index: 1001;
+  margin-top: 25px;
+}
+
+.usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.icone-usuario {
+  width: 24px;
+  height: 24px;
+}
+
+.menu-usuario {
+  background-color: white;
+  color: black;
+  position: absolute;
+  right: 0;
+  top: 30px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 100px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menu-usuario a {
+  display: block;
+  padding: 8px;
+  text-decoration: none;
+  color: black;
+}
+
+.menu-usuario a:hover {
+  background-color: #f0f0f0;
+}
+
