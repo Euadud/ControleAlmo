@@ -1,163 +1,182 @@
- body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: rgba(179, 179, 179, 0.979);
-    }
+/* Geral */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f6f9;
+  color: #333;
+}
 
-.top-footer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #474747;
-  color: #fff;
+/* Container de Login */
+#loginContainer {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 30px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 10px;
   text-align: center;
-  padding: 10px 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-
 }
-.config{
-margin-top: 100px;
-color: #ffffff;
-font-size: px;
-font-family: Arial, Helvetica, sans-serif
 
+#loginContainer h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
 }
-    
-    h1 {
 
-      color: #ffffff;
-       
-    }
-    input, button {
-      margin: 5px;
-      padding: 8px;
-            box-shadow: 0 2px 5px black;
+#loginContainer input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
 
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: #ffffff;
-      box-shadow: 0 2px 5px black;
-    }
-    th, td {
-      padding: 10px;
-      border: 1px solid #ffffff;
-      text-align: left;
-    box-shadow: 0 2px 5px black;
-
-    }
-    th {
-      background-color: #e0e0e0;
-       box-shadow: 0 2px 5px black;
-
-    }
-    .delete-btn {
-      color: white;
-      background-color: red;
-      border: none;
-      padding: 5px 10px;
-      cursor: pointer;
-
-
-    }
-    .export-btn {
-      background-color: green;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      cursor: pointer;
-      margin-top: 10px;
-            box-shadow: 0 2px 5px black;
-
-    }
-     .loginContainer {
-      font-family: Arial, sans-serif;
-    }
-
-    #loginContainer, #mainContainer {
-      display: none;
-      text-align: center;
-      margin-top: 50px;
-    }
-
-    input {
-      margin: 10px;
-      padding: 8px;
-      font-size: 16px;
-    }
-
-    .login-btn {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    #errorMessage {
-      color: red;
-      margin-top: 10px;
-    }
-
-
-    table {
-      margin: 20px auto;
-      border-collapse: collapse;
-      width: 80%;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-    }
-
-    .export-btn {
-      margin-left: 10px;
-    }
-    .usuario-logado {
-  position: absolute;
-  top: 10px;
-  right: 20px;
+.login-btn {
+  background-color: #2ecc71;
   color: white;
-  font-size: 16px;
-  z-index: 1001;
-  margin-top: 25px;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #27ae60;
+}
+
+#errorMessage {
+  color: red;
+  margin-top: 10px;
+}
+
+/* Container Principal */
+#mainContainer {
+  display: none;
+  padding: 30px;
+}
+
+/* Título */
+.top-footer {
+  background-color: #2c3e50;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.top-footer h1 {
+  margin: 0;
+}
+
+/* Formulário */
+.config {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.config label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.config input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.config button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.config button:hover {
+  background-color: #2980b9;
+}
+
+.export-btn {
+  background-color: #e67e22;
+}
+
+.export-btn:hover {
+  background-color: #d35400;
+}
+
+/* Tabela */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+table th, table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+table th {
+  background-color: #f1f1f1;
+  font-weight: bold;
+}
+
+/* Usuário Logado */
+.usuario-logado {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .usuario-info {
   display: flex;
   align-items: center;
-  gap: 8px;
   cursor: pointer;
+  background-color: #ecf0f1;
+  padding: 8px 12px;
+  border-radius: 20px;
 }
 
 .icone-usuario {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  margin-right: 8px;
+}
+
+.seta {
+  margin-left: 8px;
 }
 
 .menu-usuario {
-  background-color: white;
-  color: black;
-  position: absolute;
-  right: 0;
-  top: 30px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  min-width: 100px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .menu-usuario a {
-  display: block;
-  padding: 8px;
+  color: #e74c3c;
   text-decoration: none;
-  color: black;
 }
 
 .menu-usuario a:hover {
-  background-color: #f0f0f0;
+  text-decoration: underline;
 }
-
