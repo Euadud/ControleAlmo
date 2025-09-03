@@ -2,93 +2,239 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Controle de Peças - Almoxarifado</title>
-  <link rel="stylesheet" href="controle.css">
+  <title>Controle de Peças - Neon</title>
   <style>
-    body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
-    #loginContainer, #mainContainer { max-width: 600px; margin: 50px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-    h1, h2 { text-align: center; }
-    input, button { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    table, th, td { border: 1px solid #ccc; }
-    th, td { padding: 10px; text-align: left; }
-    .usuario-logado { margin-top: 20px; }
-    .usuario-info { cursor: pointer; display: flex; align-items: center; gap: 10px; }
-    .menu-usuario { background: #eee; padding: 10px; border-radius: 5px; }
-    .menu-usuario a { display: block; text-decoration: none; color: #333; margin-bottom: 5px; }
+    body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin:0; padding:0; }
+    #loginContainer, #mainContainer { max-width: 600px; margin:50px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+    h1,h2{text-align:center;}
+    input,button{padding:8px;margin:5px 0;width:100%;box-sizing:border-box;}
+    table{width:100%;border-collapse:collapse;margin-top:20px;}
+    table,th,td{border:1px solid #ccc;}
+    th,td{padding:10px;text-align:left;}
+    .usuario-logado{margin-top:20px;}
+    .usuario-info{cursor:pointer;display:flex;align-items:center;gap:10px;}
+    .menu-usuario{background:#eee;padding:10px;border-radius:5px;}
+    .menu-usuario a{display:block;text-decoration:none;color:#333;margin-bottom:5px;}
   </style>
 </head>
-
 <body>
 
-  <!-- Login -->
-  <div id="loginContainer">
-    <h2>Login - Almoxarifado</h2>
-    <input type="text" id="loginUser" placeholder="Usuário"><br>
-    <input type="password" id="loginPass" placeholder="Senha"><br>
-    <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <div id="errorMessage" style="color:red; margin-top:10px;"></div>
+<!-- LOGIN -->
+<div id="loginContainer">
+  <h2>Login - Almoxarifado</h2>
+  <input type="text" id="loginUser" placeholder="Usuário"><br>
+  <input type="password" id="loginPass" placeholder="Senha"><br>
+  <button onclick="fazerLogin()">Entrar</button>
+  <div id="errorMessage" style="color:red;margin-top:10px;"></div>
+</div>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<div id="mainContainer" style="display:none;">
+  <h1>Controle de Peças - Neon</h1>
+
+  <div class="config">
+    <label>Nome da Peça:</label>
+    <input type="text" id="nomePeca" placeholder="Ex: Parafuso"><br>
+
+    <label>Código da Peça:</label>
+    <input type="text" id="codigoPeca" placeholder="Ex: P123"><br>
+
+    <label>Quantidade:</label>
+    <input type="number" id="quantidadePeca" placeholder="Ex: 100"><br>
+
+    <button onclick="adicionarPeca()">Adicionar Peça</button>
+    <button onclick="exportarParaExcel()">Exportar para Excel</button>
   </div>
 
-  <!-- Conteúdo Principal -->
-  <div id="mainContainer" style="display:none;">
-    <div class="top-footer">
-      <h1>Controle de Peças - Almoxarifado</h1>
+  <table id="tabelaPecas">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Código</th>
+        <th>Quantidade</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="usuarioLogado" class="usuario-logado">
+    <div class="usuario-info" onclick="alternarMenuUsuario()">
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" width="32" alt="Ícone usuário">
+      <span id="nomeUsuario">Usuário</span>
+      <span class="seta">&#9662;</span>
     </div>
-
-    <div class="config">
-      <label>Nome da Peça:</label>
-      <input type="text" id="nomePeca" placeholder="Ex: Parafuso"><br>
-
-      <label>Código da Peça:</label>
-      <input type="text" id="codigoPeca" placeholder="Ex: P123"><br>
-
-      <label>Quantidade:</label>
-      <input type="number" id="quantidadePeca" placeholder="Ex: 100"><br>
-
-      <button onclick="adicionarPeca()">Adicionar Peça</button>
-      <button class="export-btn" onclick="exportarParaExcel()">Exportar para Excel</button>
-    </div>
-
-    <table id="tabelaPecas">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Código</th>
-          <th>Quantidade</th>
-          <th>Ação</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Linhas adicionadas via JS -->
-      </tbody>
-    </table>
-
-    <div id="usuarioLogado" class="usuario-logado">
-      <div class="usuario-info" onclick="alternarMenuUsuario()">
-        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" class="icone-usuario" alt="Ícone usuário" width="32">
-        <span id="nomeUsuario">Usuário</span>
-        <span class="seta">&#9662;</span>
-      </div>
-      <div id="menuUsuario" class="menu-usuario" style="display: none;">
-        <a href="#" onclick="fazerLogout()">Sair</a>
-      </div>
+    <div id="menuUsuario" class="menu-usuario" style="display:none;">
+      <a href="#" onclick="fazerLogout()">Sair</a>
     </div>
   </div>
+</div>
 
-  <!-- Script Neon -->
-  <script type="module">
-    import { connect } from "@netlify/neon";
+<script type="module">
+  import { connect } from "@netlify/neon";
 
-    // Conexão com Neon
-    window.client = connect({
-      connectionString: "SEU_NEON_DATABASE_URL_AQUI"
+  // ===========================
+  // CONFIGURAÇÃO DO NEON
+  // ===========================
+  const client = connect({
+    connectionString: "SUA_NEON_DATABASE_URL_AQUI"
+  });
+
+  // ===========================
+  // LOGIN
+  // ===========================
+  const usuarios = [
+    { usuario: "admin", senha: "1234" },
+    { usuario: "maria", senha: "senha123" },
+    { usuario: "joao", senha: "abc321" },
+    { usuario: "letticia", senha: "1337" },
+  ];
+
+  function fazerLogin() {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+    const usuarioEncontrado = usuarios.find(u=>u.usuario===user && u.senha===pass);
+
+    if(usuarioEncontrado){
+      localStorage.setItem("usuarioLogado",user);
+      document.getElementById('loginContainer').style.display='none';
+      document.getElementById('mainContainer').style.display='block';
+      document.getElementById('nomeUsuario').innerText=user;
+      carregarPecas();
+    } else {
+      document.getElementById('errorMessage').innerText="Usuário ou senha incorretos.";
+    }
+  }
+
+  window.onload = function(){
+    const user = localStorage.getItem("usuarioLogado");
+    if(user){
+      document.getElementById('loginContainer').style.display='none';
+      document.getElementById('mainContainer').style.display='block';
+      document.getElementById('nomeUsuario').innerText=user;
+      carregarPecas();
+    }
+  }
+
+  function fazerLogout(){
+    localStorage.removeItem("usuarioLogado");
+    location.reload();
+  }
+
+  function alternarMenuUsuario(){
+    const menu = document.getElementById('menuUsuario');
+    menu.style.display = (menu.style.display==='none')?'block':'none';
+  }
+
+  // ===========================
+  // FUNÇÕES DE PEÇAS
+  // ===========================
+  let listaPecas = [];
+
+  async function criarTabelaSeNaoExistir(){
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS pecas (
+        id SERIAL PRIMARY KEY,
+        nome TEXT NOT NULL,
+        codigo TEXT NOT NULL,
+        quantidade INTEGER NOT NULL
+      )
+    `);
+  }
+
+  async function adicionarPeca(){
+    const nome = document.getElementById('nomePeca').value.trim();
+    const codigo = document.getElementById('codigoPeca').value.trim();
+    const quantidade = parseInt(document.getElementById('quantidadePeca').value);
+    if(!nome || !codigo || isNaN(quantidade)) return;
+
+    await client.query(
+      "INSERT INTO pecas (nome,codigo,quantidade) VALUES ($1,$2,$3)",
+      [nome,codigo,quantidade]
+    );
+
+    document.getElementById('nomePeca').value="";
+    document.getElementById('codigoPeca').value="";
+    document.getElementById('quantidadePeca').value="";
+    carregarPecas();
+  }
+
+  async function removerPeca(id){
+    await client.query("DELETE FROM pecas WHERE id=$1",[id]);
+    carregarPecas();
+  }
+
+  async function editarQuantidade(id,input){
+    const novaQtd = parseInt(input.value);
+    if(isNaN(novaQtd)) return;
+    await client.query("UPDATE pecas SET quantidade=$1 WHERE id=$2",[novaQtd,id]);
+    carregarPecas();
+  }
+
+  async function carregarPecas(){
+    await criarTabelaSeNaoExistir();
+    const result = await client.query("SELECT * FROM pecas ORDER BY id ASC");
+    listaPecas = result.rows;
+    atualizarTabela();
+  }
+
+  function atualizarTabela(){
+    const tbody = document.getElementById('tabelaPecas').querySelector('tbody');
+    tbody.innerHTML="";
+    listaPecas.forEach(peca=>{
+      const row = tbody.insertRow();
+      row.innerHTML=`
+        <td>${peca.nome}</td>
+        <td>${peca.codigo}</td>
+        <td><input type="number" value="${peca.quantidade}" min="0" onchange="editarQuantidade(${peca.id},this)"></td>
+        <td><button onclick="removerPeca(${peca.id})">Remover</button></td>
+      `;
     });
-  </script>
+  }
 
-  <!-- Script de controle (adaptado para Neon) -->
-  <script type="module" src="controle.js"></script>
+  // ===========================
+  // Exportar Excel
+  // ===========================
+  function exportarParaExcel(){
+    if(listaPecas.length===0){ alert("Nenhuma peça para exportar."); return;}
+    let html = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:x="urn:schemas-microsoft-com:office:excel"
+            xmlns="http://www.w3.org/TR/REC-html40">
+      <head><!--[if gte mso 9]>
+      <xml>
+        <x:ExcelWorkbook>
+          <x:ExcelWorksheets>
+            <x:ExcelWorksheet>
+              <x:Name>Peças</x:Name>
+              <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+            </x:ExcelWorksheet>
+          </x:ExcelWorksheets>
+        </x:ExcelWorkbook>
+      </xml><![endif]-->
+      </head>
+      <body>
+        <table border="1">
+          <tr><th>Nome</th><th>Código</th><th>Quantidade</th></tr>`;
+    listaPecas.forEach(p=>{
+      html+=`<tr><td>${p.nome}</td><td>${p.codigo}</td><td>${p.quantidade}</td></tr>`;
+    });
+    html+=`</table></body></html>`;
 
+    const blob = new Blob([html],{type:"application/vnd.ms-excel"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "pecas.xls";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Atualização automática a cada 2 segundos
+  setInterval(carregarPecas,2000);
+
+</script>
 </body>
 </html>
+
 
