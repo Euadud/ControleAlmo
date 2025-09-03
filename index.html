@@ -6,6 +6,40 @@
   <link rel="stylesheet" href="controle.css">
   <style></style>
 </head>
+<script type="module">
+  // Importa Firebase (pega direto do CDN oficial)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } 
+    from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+  // 🔑 Seu config do Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCfSLl63fMyAxmwwnkTnsvBkUAL26GqC7E",
+    authDomain: "almo-pecas.firebaseapp.com",
+    databaseURL: "https://almo-pecas-default-rtdb.firebaseio.com",
+    projectId: "almo-pecas",
+    storageBucket: "almo-pecas.firebasestorage.app",
+    messagingSenderId: "41871048404",
+    appId: "1:41871048404:web:222effde702fb396340541"
+  };
+
+  // Inicializa Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Deixa o Firestore acessível no controle.js
+  window.db = db;
+  window.collection = collection;
+  window.addDoc = addDoc;
+  window.updateDoc = updateDoc;
+  window.deleteDoc = deleteDoc;
+  window.doc = doc;
+  window.onSnapshot = onSnapshot;
+</script>
+
+<!-- Agora importa seu script de controle -->
+<script src="controle.js"></script>
+
 <body>
 
   <!-- Login -->
@@ -65,4 +99,5 @@
   <script src="controle.js"></script>
 
 </body>
+
 </html>
