@@ -1,21 +1,169 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Controle de Peças - Neon</title>
-  <style>
-    body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin:0; padding:0; }
-    #loginContainer, #mainContainer { max-width: 600px; margin:50px auto; padding:20px; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
-    h1,h2{text-align:center;}
-    input,button{padding:8px;margin:5px 0;width:100%;box-sizing:border-box;}
-    table{width:100%;border-collapse:collapse;margin-top:20px;}
-    table,th,td{border:1px solid #ccc;}
-    th,td{padding:10px;text-align:left;}
-    .usuario-logado{margin-top:20px;}
-    .usuario-info{cursor:pointer;display:flex;align-items:center;gap:10px;}
-    .menu-usuario{background:#eee;padding:10px;border-radius:5px;}
-    .menu-usuario a{display:block;text-decoration:none;color:#333;margin-bottom:5px;}
-  </style>
+<meta charset="UTF-8">
+<title>Controle de Peças - Neon</title>
+<style>
+
+  /* Reset básico */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+  }
+
+  /* Containers */
+  #loginContainer, #mainContainer {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+
+  /* Inputs e Botões */
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52,152,219,0.5);
+  }
+
+  button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #3498db;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button:hover {
+    background-color: #2980b9;
+  }
+
+  /* Tabela */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background-color: #fff;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #3498db;
+    color: #fff;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  td input[type=number] {
+    width: 80px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  td button {
+    width: auto;
+    padding: 6px 12px;
+    background-color: #e74c3c;
+    font-size: 14px;
+  }
+
+  td button:hover {
+    background-color: #c0392b;
+  }
+
+  /* Menu usuário */
+  .usuario-logado {
+    margin-top: 30px;
+    text-align: right;
+    position: relative;
+  }
+
+  .usuario-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    background-color: #ecf0f1;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  .usuario-info img {
+    border-radius: 50%;
+  }
+
+  .seta {
+    font-size: 14px;
+    color: #2c3e50;
+  }
+
+  .menu-usuario {
+    display: none;
+    position: absolute;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 5px;
+    width: 150px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .menu-usuario a {
+    display: block;
+    padding: 10px;
+    color: #2c3e50;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+
+  .menu-usuario a:hover {
+    background-color: #3498db;
+    color: #fff;
+  }
+
+  /* Responsivo */
+  @media(max-width: 768px){
+    #loginContainer, #mainContainer { margin: 20px; padding: 20px; }
+    td input[type=number] { width: 60px; }
+    button { font-size: 14px; }
+  }
+</style>
+
+</style>
 </head>
 <body>
 
@@ -70,19 +218,10 @@
   </div>
 </div>
 
-<script type="module">
-import { connect } from "@netlify/neon";
+<script>
+let listaPecas = [];
 
-// ===========================
-// CONFIGURAÇÃO DO NEON
-// ===========================
-const client = connect({
-  connectionString: "SUA_NEON_DATABASE_URL_AQUI"
-});
-
-// ===========================
 // LOGIN
-// ===========================
 const usuarios = [
   { usuario: "admin", senha: "1234" },
   { usuario: "maria", senha: "senha123" },
@@ -90,7 +229,7 @@ const usuarios = [
   { usuario: "letticia", senha: "1337" },
 ];
 
-window.fazerLogin = function() {
+function fazerLogin() {
   const user = document.getElementById('loginUser').value.trim();
   const pass = document.getElementById('loginPass').value.trim();
   const usuarioEncontrado = usuarios.find(u => u.usuario === user && u.senha === pass);
@@ -106,47 +245,41 @@ window.fazerLogin = function() {
   }
 }
 
-window.fazerLogout = function(){
+function fazerLogout(){
   localStorage.removeItem("usuarioLogado");
   location.reload();
 }
 
-window.alternarMenuUsuario = function(){
+function alternarMenuUsuario(){
   const menu = document.getElementById('menuUsuario');
   menu.style.display = (menu.style.display==='none')?'block':'none';
 }
 
-// Vincula botões
-document.getElementById("loginBtn").addEventListener("click", fazerLogin);
-document.getElementById("logoutBtn").addEventListener("click", fazerLogout);
-document.getElementById("usuarioInfo").addEventListener("click", alternarMenuUsuario);
-
 // ===========================
-// PEÇAS
+// FUNÇÕES PEÇAS (COM NETLIFY + NEON)
 // ===========================
-let listaPecas = [];
-
-async function criarTabelaSeNaoExistir(){
-  await client.query(`
-    CREATE TABLE IF NOT EXISTS pecas (
-      id SERIAL PRIMARY KEY,
-      nome TEXT NOT NULL,
-      codigo TEXT NOT NULL,
-      quantidade INTEGER NOT NULL
-    )
-  `);
+async function carregarPecas(){
+  try {
+    const res = await fetch("/.netlify/functions/listarPecas");
+    listaPecas = await res.json();
+    atualizarTabela();
+  } catch(err){
+    console.error(err);
+  }
 }
 
-window.adicionarPeca = async function() {
+async function adicionarPeca(){
   const nome = document.getElementById('nomePeca').value.trim();
   const codigo = document.getElementById('codigoPeca').value.trim();
   const quantidade = parseInt(document.getElementById('quantidadePeca').value);
+
   if(!nome || !codigo || isNaN(quantidade)) return;
 
-  await client.query(
-    "INSERT INTO pecas (nome,codigo,quantidade) VALUES ($1,$2,$3)",
-    [nome,codigo,quantidade]
-  );
+  await fetch("/.netlify/functions/addPeca", {
+    method: "POST",
+    body: JSON.stringify({nome, codigo, quantidade}),
+    headers: { "Content-Type": "application/json" }
+  });
 
   document.getElementById('nomePeca').value="";
   document.getElementById('codigoPeca').value="";
@@ -154,23 +287,25 @@ window.adicionarPeca = async function() {
   carregarPecas();
 }
 
-window.removerPeca = async function(id){
-  await client.query("DELETE FROM pecas WHERE id=$1",[id]);
+async function removerPeca(id){
+  await fetch("/.netlify/functions/removerPeca", {
+    method: "POST",
+    body: JSON.stringify({id}),
+    headers: { "Content-Type": "application/json" }
+  });
   carregarPecas();
 }
 
-window.editarQuantidade = async function(id,input){
-  const novaQtd = parseInt(input.value);
-  if(isNaN(novaQtd)) return;
-  await client.query("UPDATE pecas SET quantidade=$1 WHERE id=$2",[novaQtd,id]);
-  carregarPecas();
-}
+async function editarQuantidade(id,input){
+  const quantidade = parseInt(input.value);
+  if(isNaN(quantidade)) return;
 
-async function carregarPecas(){
-  await criarTabelaSeNaoExistir();
-  const result = await client.query("SELECT * FROM pecas ORDER BY id ASC");
-  listaPecas = result.rows;
-  atualizarTabela();
+  await fetch("/.netlify/functions/editarPeca", {
+    method: "POST",
+    body: JSON.stringify({id, quantidade}),
+    headers: { "Content-Type": "application/json" }
+  });
+  carregarPecas();
 }
 
 function atualizarTabela(){
@@ -181,38 +316,24 @@ function atualizarTabela(){
     row.innerHTML=`
       <td>${peca.nome}</td>
       <td>${peca.codigo}</td>
-      <td><input type="number" value="${peca.quantidade}" min="0" onchange="editarQuantidade(${peca.id},this)"></td>
-      <td><button onclick="removerPeca(${peca.id})">Remover</button></td>
+      <td><input type="number" value="${peca.quantidade}" min="0"></td>
+      <td><button>Remover</button></td>
     `;
+    const input = row.querySelector('input');
+    input.addEventListener('change', () => editarQuantidade(peca.id, input));
+    const btn = row.querySelector('button');
+    btn.addEventListener('click', () => removerPeca(peca.id));
   });
 }
 
 // Exportar Excel
-window.exportarParaExcel = function(){
+function exportarParaExcel(){
   if(listaPecas.length===0){ alert("Nenhuma peça para exportar."); return;}
-  let html = `
-    <html xmlns:o="urn:schemas-microsoft-com:office:office"
-          xmlns:x="urn:schemas-microsoft-com:office:excel"
-          xmlns="http://www.w3.org/TR/REC-html40">
-    <head><!--[if gte mso 9]>
-    <xml>
-      <x:ExcelWorkbook>
-        <x:ExcelWorksheets>
-          <x:ExcelWorksheet>
-            <x:Name>Peças</x:Name>
-            <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
-          </x:ExcelWorksheet>
-        </x:ExcelWorksheets>
-      </x:ExcelWorkbook>
-    </xml><![endif]-->
-    </head>
-    <body>
-      <table border="1">
-        <tr><th>Nome</th><th>Código</th><th>Quantidade</th></tr>`;
+  let html = `<table border="1"><tr><th>Nome</th><th>Código</th><th>Quantidade</th></tr>`;
   listaPecas.forEach(p=>{
     html+=`<tr><td>${p.nome}</td><td>${p.codigo}</td><td>${p.quantidade}</td></tr>`;
   });
-  html+=`</table></body></html>`;
+  html+=`</table>`;
 
   const blob = new Blob([html],{type:"application/vnd.ms-excel"});
   const link = document.createElement("a");
@@ -223,7 +344,10 @@ window.exportarParaExcel = function(){
   document.body.removeChild(link);
 }
 
-// Vincula botões de peças
+// Vincula botões
+document.getElementById("loginBtn").addEventListener("click", fazerLogin);
+document.getElementById("logoutBtn").addEventListener("click", fazerLogout);
+document.getElementById("usuarioInfo").addEventListener("click", alternarMenuUsuario);
 document.getElementById("addPecaBtn").addEventListener("click", adicionarPeca);
 document.getElementById("exportBtn").addEventListener("click", exportarParaExcel);
 
@@ -244,6 +368,4 @@ window.onload = function(){
 
 </body>
 </html>
-
-
 
