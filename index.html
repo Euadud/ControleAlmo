@@ -224,6 +224,7 @@ const sql = neon(); // automatically uses env NETLIFY_DATABASE_URL
 const [post] = await sql`SELECT * FROM posts WHERE id = ${postId}`;
 let listaPecas = [];
 let listaPecas = [];
+{ "id": 12345, "nome": "Parafuso", "codigo": "P123", "quantidade": 100 }
 
 // ==================== LOGIN ====================
 const usuarios = [
