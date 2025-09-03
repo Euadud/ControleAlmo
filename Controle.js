@@ -1,11 +1,28 @@
+// ===========================
+// Controle de Peças com Neon (PostgreSQL)
+// ===========================
+
+import { connect } from "@netlify/neon";
+
+// Lista em memória para atualizar tabela
+let listaPecas = [];
+
+// ===========================
+// Conexão com Neon
+// ===========================
+const client = connect({
+  connectionString: process.env.NEON_DATABASE_URL
+});
+
+// ===========================
+// LOGIN (sem alterações, simples)
+// ===========================
 const usuarios = [
   { usuario: "admin", senha: "1234" },
   { usuario: "maria", senha: "senha123" },
   { usuario: "joao", senha: "abc321" },
   { usuario: "letticia", senha: "1337" },
 ];
-
-let listaPecas = [];
 
 function fazerLogin() {
   const user = document.getElementById('loginUser').value.trim();
@@ -44,56 +61,73 @@ function alternarMenuUsuario() {
   menu.style.display = (menu.style.display === 'none') ? 'block' : 'none';
 }
 
-function adicionarPeca() {
-  const nome = document.getElementById('nomePeca').value;
-  const codigo = document.getElementById('codigoPeca').value;
+// ===========================
+// FUNÇÕES NEON
+// ===========================
+
+// Criar tabela no Neon (executar apenas uma vez)
+async function criarTabela() {
+  await client.query(`
+    CREATE TABLE IF NOT EXISTS pecas (
+      id SERIAL PRIMARY KEY,
+      nome TEXT NOT NULL,
+      codigo TEXT NOT NULL,
+      quantidade INTEGER NOT NULL
+    );
+  `);
+}
+
+// Adicionar peça no Neon
+async function adicionarPeca() {
+  const nome = document.getElementById('nomePeca').value.trim();
+  const codigo = document.getElementById('codigoPeca').value.trim();
   const quantidade = parseInt(document.getElementById('quantidadePeca').value);
 
   if (!nome || !codigo || isNaN(quantidade)) return;
 
-  const novaPeca = { nome, codigo, quantidade };
-  listaPecas.push(novaPeca);
-  salvarPecas();
-  atualizarTabela();
-  
+  await client.query(
+    "INSERT INTO pecas (nome, codigo, quantidade) VALUES ($1, $2, $3)",
+    [nome, codigo, quantidade]
+  );
+
   document.getElementById('nomePeca').value = "";
   document.getElementById('codigoPeca').value = "";
   document.getElementById('quantidadePeca').value = "";
+
+  carregarPecasSalvas();
 }
 
-function removerLinha(index) {
-  listaPecas.splice(index, 1);
-  salvarPecas();
+// Remover peça no Neon
+async function removerLinha(index) {
+  const id = listaPecas[index].id;
+  await client.query("DELETE FROM pecas WHERE id = $1", [id]);
+  carregarPecasSalvas();
+}
+
+// Editar quantidade no Neon
+async function editarQuantidade(index, input) {
+  const novaQuantidade = parseInt(input.value);
+  if (!isNaN(novaQuantidade)) {
+    const id = listaPecas[index].id;
+    await client.query("UPDATE pecas SET quantidade = $1 WHERE id = $2", [novaQuantidade, id]);
+    carregarPecasSalvas();
+  }
+}
+
+// Carregar peças do Neon
+async function carregarPecasSalvas() {
+  const result = await client.query("SELECT * FROM pecas ORDER BY id ASC");
+  listaPecas = result.rows;
   atualizarTabela();
 }
 
-function editarQuantidade(index, input) {
-  const novaQuantidade = parseInt(input.value);
-  if (!isNaN(novaQuantidade)) {
-    listaPecas[index].quantidade = novaQuantidade;
-    salvarPecas();
-  }
-}
-
-function salvarPecas() {
-  localStorage.setItem("pecasSalvas", JSON.stringify(listaPecas));
-}
-
-function carregarPecasSalvas() {
-  const salvas = localStorage.getItem("pecasSalvas");
-  if (salvas) {
-    listaPecas = JSON.parse(salvas);
-    atualizarTabela();
-  }
-}
-
+// Atualizar tabela na tela
 function atualizarTabela() {
   const tbody = document.getElementById('tabelaPecas').getElementsByTagName('tbody')[0];
   tbody.innerHTML = "";
 
   listaPecas.forEach((peca, index) => {
     const linha = tbody.insertRow();
-
     linha.innerHTML = `
       <td>${peca.nome}</td>
       <td>${peca.codigo}</td>
@@ -107,13 +141,13 @@ function atualizarTabela() {
   });
 }
 
+// Exportar para Excel
 function exportarParaExcel() {
   if (listaPecas.length === 0) {
     alert("Nenhuma peça para exportar.");
     return;
   }
 
-  // Monta o HTML da tabela
   let html = `
     <html xmlns:o="urn:schemas-microsoft-com:office:office" 
           xmlns:x="urn:schemas-microsoft-com:office:excel" 
@@ -156,15 +190,15 @@ function exportarParaExcel() {
     </body>
     </html>`;
 
-  // Cria o Blob com tipo correto
   const blob = new Blob([html], { type: "application/vnd.ms-excel" });
-
-  // Cria o link e aciona o download
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `pecas_${usuarioAtual || "usuario"}.xls`;
+  link.download = `pecas.xls`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
 }
+
+// Inicializa tabela Neon
+criarTabela();
 
