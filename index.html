@@ -221,7 +221,7 @@
 <script>
 let listaPecas = [];
 
-// LOGIN
+// ==================== LOGIN ====================
 const usuarios = [
   { usuario: "admin", senha: "1234" },
   { usuario: "maria", senha: "senha123" },
@@ -255,16 +255,16 @@ function alternarMenuUsuario(){
   menu.style.display = (menu.style.display==='none')?'block':'none';
 }
 
-// ===========================
-// FUNÇÕES PEÇAS (COM NETLIFY + NEON)
-// ===========================
+// ==================== PEÇAS ====================
 async function carregarPecas(){
   try {
     const res = await fetch("/.netlify/functions/listarPecas");
+    if(!res.ok) throw new Error("Erro ao carregar peças");
     listaPecas = await res.json();
     atualizarTabela();
   } catch(err){
     console.error(err);
+    alert("Não foi possível carregar as peças. Confira o console.");
   }
 }
 
@@ -273,69 +273,99 @@ async function adicionarPeca(){
   const codigo = document.getElementById('codigoPeca').value.trim();
   const quantidade = parseInt(document.getElementById('quantidadePeca').value);
 
-  if(!nome || !codigo || isNaN(quantidade)) return;
+  if(!nome || !codigo || isNaN(quantidade)) {
+    alert("Preencha todos os campos corretamente.");
+    return;
+  }
 
-  await fetch("/.netlify/functions/addPeca", {
-    method: "POST",
-    body: JSON.stringify({nome, codigo, quantidade}),
-    headers: { "Content-Type": "application/json" }
-  });
+  try {
+    const res = await fetch("/.netlify/functions/addPeca", {
+      method: "POST",
+      body: JSON.stringify({nome, codigo, quantidade}),
+      headers: { "Content-Type": "application/json" }
+    });
+    
+    if(!res.ok) throw new Error("Erro ao adicionar peça");
 
-  document.getElementById('nomePeca').value="";
-  document.getElementById('codigoPeca').value="";
-  document.getElementById('quantidadePeca').value="";
-  carregarPecas();
+    const novaPeca = await res.json(); // espera receber {id, nome, codigo, quantidade} do banco
+    listaPecas.push(novaPeca);        // adiciona na lista local
+    atualizarTabela();
+
+    document.getElementById('nomePeca').value="";
+    document.getElementById('codigoPeca').value="";
+    document.getElementById('quantidadePeca').value="";
+  } catch(err) {
+    console.error(err);
+    alert("Não foi possível adicionar a peça. Confira o console.");
+  }
 }
 
 async function removerPeca(id){
-  await fetch("/.netlify/functions/removerPeca", {
-    method: "POST",
-    body: JSON.stringify({id}),
-    headers: { "Content-Type": "application/json" }
-  });
-  carregarPecas();
+  try {
+    const res = await fetch("/.netlify/functions/removerPeca", {
+      method: "POST",
+      body: JSON.stringify({id}),
+      headers: { "Content-Type": "application/json" }
+    });
+    if(!res.ok) throw new Error("Erro ao remover peça");
+    listaPecas = listaPecas.filter(p => p.id !== id);
+    atualizarTabela();
+  } catch(err) {
+    console.error(err);
+    alert("Não foi possível remover a peça. Confira o console.");
+  }
 }
 
-async function editarQuantidade(id,input){
+async function editarQuantidade(id, input){
   const quantidade = parseInt(input.value);
   if(isNaN(quantidade)) return;
 
-  await fetch("/.netlify/functions/editarPeca", {
-    method: "POST",
-    body: JSON.stringify({id, quantidade}),
-    headers: { "Content-Type": "application/json" }
-  });
-  carregarPecas();
+  try {
+    const res = await fetch("/.netlify/functions/editarPeca", {
+      method: "POST",
+      body: JSON.stringify({id, quantidade}),
+      headers: { "Content-Type": "application/json" }
+    });
+    if(!res.ok) throw new Error("Erro ao editar peça");
+    const peca = listaPecas.find(p => p.id === id);
+    if(peca) peca.quantidade = quantidade;
+  } catch(err) {
+    console.error(err);
+    alert("Não foi possível atualizar a quantidade. Confira o console.");
+  }
 }
 
 function atualizarTabela(){
   const tbody = document.getElementById('tabelaPecas').querySelector('tbody');
-  tbody.innerHTML="";
-  listaPecas.forEach(peca=>{
+  tbody.innerHTML = "";
+
+  listaPecas.forEach(peca => {
     const row = tbody.insertRow();
-    row.innerHTML=`
+    row.innerHTML = `
       <td>${peca.nome}</td>
       <td>${peca.codigo}</td>
       <td><input type="number" value="${peca.quantidade}" min="0"></td>
       <td><button>Remover</button></td>
     `;
+
     const input = row.querySelector('input');
     input.addEventListener('change', () => editarQuantidade(peca.id, input));
+
     const btn = row.querySelector('button');
     btn.addEventListener('click', () => removerPeca(peca.id));
   });
 }
 
-// Exportar Excel
+// ==================== EXPORTAR ====================
 function exportarParaExcel(){
   if(listaPecas.length===0){ alert("Nenhuma peça para exportar."); return;}
   let html = `<table border="1"><tr><th>Nome</th><th>Código</th><th>Quantidade</th></tr>`;
   listaPecas.forEach(p=>{
-    html+=`<tr><td>${p.nome}</td><td>${p.codigo}</td><td>${p.quantidade}</td></tr>`;
+    html += `<tr><td>${p.nome}</td><td>${p.codigo}</td><td>${p.quantidade}</td></tr>`;
   });
-  html+=`</table>`;
+  html += `</table>`;
 
-  const blob = new Blob([html],{type:"application/vnd.ms-excel"});
+  const blob = new Blob([html], {type:"application/vnd.ms-excel"});
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = "pecas.xls";
@@ -344,17 +374,14 @@ function exportarParaExcel(){
   document.body.removeChild(link);
 }
 
-// Vincula botões
+// ==================== EVENTOS ====================
 document.getElementById("loginBtn").addEventListener("click", fazerLogin);
 document.getElementById("logoutBtn").addEventListener("click", fazerLogout);
 document.getElementById("usuarioInfo").addEventListener("click", alternarMenuUsuario);
 document.getElementById("addPecaBtn").addEventListener("click", adicionarPeca);
 document.getElementById("exportBtn").addEventListener("click", exportarParaExcel);
 
-// Auto carregamento a cada 2s
-setInterval(carregarPecas,2000);
-
-// Verifica login ao carregar
+// ==================== AUTOLOAD ====================
 window.onload = function(){
   const user = localStorage.getItem("usuarioLogado");
   if(user){
@@ -365,7 +392,5 @@ window.onload = function(){
   }
 }
 </script>
-
 </body>
-</html>
 
