@@ -4,55 +4,34 @@
   <meta charset="UTF-8">
   <title>Controle de Peças - Almoxarifado</title>
   <link rel="stylesheet" href="controle.css">
-  <style></style>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+    #loginContainer, #mainContainer { max-width: 600px; margin: 50px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    h1, h2 { text-align: center; }
+    input, button { padding: 8px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 10px; text-align: left; }
+    .usuario-logado { margin-top: 20px; }
+    .usuario-info { cursor: pointer; display: flex; align-items: center; gap: 10px; }
+    .menu-usuario { background: #eee; padding: 10px; border-radius: 5px; }
+    .menu-usuario a { display: block; text-decoration: none; color: #333; margin-bottom: 5px; }
+  </style>
 </head>
-<script type="module">
-  // Importa Firebase (pega direto do CDN oficial)
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } 
-    from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-  // 🔑 Seu config do Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyCfSLl63fMyAxmwwnkTnsvBkUAL26GqC7E",
-    authDomain: "almo-pecas.firebaseapp.com",
-    databaseURL: "https://almo-pecas-default-rtdb.firebaseio.com",
-    projectId: "almo-pecas",
-    storageBucket: "almo-pecas.firebasestorage.app",
-    messagingSenderId: "41871048404",
-    appId: "1:41871048404:web:222effde702fb396340541"
-  };
-
-  // Inicializa Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Deixa o Firestore acessível no controle.js
-  window.db = db;
-  window.collection = collection;
-  window.addDoc = addDoc;
-  window.updateDoc = updateDoc;
-  window.deleteDoc = deleteDoc;
-  window.doc = doc;
-  window.onSnapshot = onSnapshot;
-</script>
-
-<!-- Agora importa seu script de controle -->
-<script src="controle.js"></script>
 
 <body>
 
   <!-- Login -->
- <div id="loginContainer">
+  <div id="loginContainer">
     <h2>Login - Almoxarifado</h2>
     <input type="text" id="loginUser" placeholder="Usuário"><br>
     <input type="password" id="loginPass" placeholder="Senha"><br>
     <button class="login-btn" onclick="fazerLogin()">Entrar</button>
-    <div id="errorMessage"></div>
+    <div id="errorMessage" style="color:red; margin-top:10px;"></div>
   </div>
 
   <!-- Conteúdo Principal -->
-  <div id="mainContainer">
+  <div id="mainContainer" style="display:none;">
     <div class="top-footer">
       <h1>Controle de Peças - Almoxarifado</h1>
     </div>
@@ -84,20 +63,32 @@
         <!-- Linhas adicionadas via JS -->
       </tbody>
     </table>
+
     <div id="usuarioLogado" class="usuario-logado">
-  <div class="usuario-info" onclick="alternarMenuUsuario()">
-    <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" class="icone-usuario" alt="Ícone usuário">
-    <span id="nomeUsuario">Usuário</span>
-    <span class="seta">&#9662;</span>
-  </div>
-  <div id="menuUsuario" class="menu-usuario" style="display: none;">
-    <a href="#" onclick="fazerLogout()">Sair</a>
-  </div>
-</div>
+      <div class="usuario-info" onclick="alternarMenuUsuario()">
+        <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" class="icone-usuario" alt="Ícone usuário" width="32">
+        <span id="nomeUsuario">Usuário</span>
+        <span class="seta">&#9662;</span>
+      </div>
+      <div id="menuUsuario" class="menu-usuario" style="display: none;">
+        <a href="#" onclick="fazerLogout()">Sair</a>
+      </div>
+    </div>
   </div>
 
-  <script src="controle.js"></script>
+  <!-- Script Neon -->
+  <script type="module">
+    import { connect } from "@netlify/neon";
+
+    // Conexão com Neon
+    window.client = connect({
+      connectionString: "SEU_NEON_DATABASE_URL_AQUI"
+    });
+  </script>
+
+  <!-- Script de controle (adaptado para Neon) -->
+  <script type="module" src="controle.js"></script>
 
 </body>
-
 </html>
+
